@@ -4,14 +4,14 @@
  */
 package com.paymennt.solanaj.data;
 
+import com.paymennt.crypto.lib.Base58;
+import com.paymennt.crypto.lib.ShortvecEncoding;
+import com.paymennt.solanaj.utils.TweetNaclFast;
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.paymennt.crypto.lib.Base58;
-import com.paymennt.crypto.lib.ShortvecEncoding;
-import com.paymennt.solanaj.utils.TweetNaclFast;
 
 
 /**

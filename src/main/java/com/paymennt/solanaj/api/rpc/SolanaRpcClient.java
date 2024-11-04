@@ -4,23 +4,20 @@
  */
 package com.paymennt.solanaj.api.rpc;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.paymennt.solanaj.api.rpc.types.RpcRequest;
 import com.paymennt.solanaj.api.rpc.types.RpcResponse;
 import com.paymennt.solanaj.exception.SolanajException;
 import com.paymennt.solanaj.utils.JsonUtils;
+import okhttp3.*;
 
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -34,11 +31,11 @@ public class SolanaRpcClient {
     private Cluster cluster;
 
     /**  */
-    private OkHttpClient httpClient = new OkHttpClient.Builder()//
-            .connectTimeout(60, TimeUnit.SECONDS)//
-            .writeTimeout(60, TimeUnit.SECONDS)//
-            .readTimeout(60, TimeUnit.SECONDS)//
-            .build();
+    private OkHttpClient httpClient = new OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS)//
+                .writeTimeout(60, TimeUnit.SECONDS)//
+                .readTimeout(60, TimeUnit.SECONDS)//
+                .build();
 
     /**  */
     private SolanaRpcApi rpcApi;
@@ -49,6 +46,25 @@ public class SolanaRpcClient {
      * @param cluster 
      */
     public SolanaRpcClient(Cluster cluster) {
+        this.cluster = cluster;
+        rpcApi = new SolanaRpcApi(this);
+    }
+
+    /**
+     * for proxy
+     *
+     * @param cluster
+     * @param proxyHost
+     * @param proxyPort
+     */
+    public SolanaRpcClient(Cluster cluster, String proxyHost, int proxyPort) {
+        this.httpClient = new OkHttpClient.Builder()
+                // Set SOCKS proxy
+                .proxy(new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(proxyHost, proxyPort)))
+                .connectTimeout(60, TimeUnit.SECONDS)//
+                .writeTimeout(60, TimeUnit.SECONDS)//
+                .readTimeout(60, TimeUnit.SECONDS)//
+                .build();
         this.cluster = cluster;
         rpcApi = new SolanaRpcApi(this);
     }

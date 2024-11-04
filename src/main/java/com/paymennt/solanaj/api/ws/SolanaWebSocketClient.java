@@ -4,6 +4,16 @@
  */
 package com.paymennt.solanaj.api.ws;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.paymennt.solanaj.api.rpc.Cluster;
+import com.paymennt.solanaj.api.rpc.types.*;
+import com.paymennt.solanaj.api.ws.listener.NotificationEventListener;
+import com.paymennt.solanaj.api.ws.listener.TransactionEventListener;
+import com.paymennt.solanaj.utils.JsonUtils;
+import com.paymennt.solanaj.utils.WebsocketClient;
+import com.paymennt.solanaj.utils.WebsocketClient.WebSocketHandler;
+import org.java_websocket.handshake.ServerHandshake;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -14,22 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import org.java_websocket.handshake.ServerHandshake;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.paymennt.solanaj.api.rpc.Cluster;
-import com.paymennt.solanaj.api.rpc.types.RpcConfig;
-import com.paymennt.solanaj.api.rpc.types.RpcLogsConfig;
-import com.paymennt.solanaj.api.rpc.types.RpcNotificationResult;
-import com.paymennt.solanaj.api.rpc.types.RpcRequest;
-import com.paymennt.solanaj.api.rpc.types.RpcResponse;
-import com.paymennt.solanaj.api.rpc.types.SolanaCommitment;
-import com.paymennt.solanaj.api.ws.listener.NotificationEventListener;
-import com.paymennt.solanaj.api.ws.listener.TransactionEventListener;
-import com.paymennt.solanaj.utils.JsonUtils;
-import com.paymennt.solanaj.utils.WebsocketClient;
-import com.paymennt.solanaj.utils.WebsocketClient.WebSocketHandler;
 
 /**
  * 

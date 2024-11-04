@@ -4,9 +4,9 @@
  */
 package com.paymennt.solanaj.data;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonSetter;
+
+import java.util.List;
 
 /**
  * 

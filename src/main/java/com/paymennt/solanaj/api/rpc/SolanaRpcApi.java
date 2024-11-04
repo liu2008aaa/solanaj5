@@ -4,37 +4,24 @@
  */
 package com.paymennt.solanaj.api.rpc;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-
-import com.paymennt.solanaj.api.rpc.types.AccountInfo;
+import com.paymennt.solanaj.api.rpc.types.*;
 import com.paymennt.solanaj.api.rpc.types.ConfigObjects.Filter;
 import com.paymennt.solanaj.api.rpc.types.ConfigObjects.Memcmp;
 import com.paymennt.solanaj.api.rpc.types.ConfigObjects.ProgramAccountConfig;
 import com.paymennt.solanaj.api.rpc.types.ConfigObjects.SignaturesForAddress;
-import com.paymennt.solanaj.api.rpc.types.ConfirmedTransaction;
-import com.paymennt.solanaj.api.rpc.types.ProgramAccount;
-import com.paymennt.solanaj.api.rpc.types.RecentBlockhash;
-import com.paymennt.solanaj.api.rpc.types.RpcConfig;
-import com.paymennt.solanaj.api.rpc.types.RpcFeesResult;
 import com.paymennt.solanaj.api.rpc.types.RpcResultTypes.ValueLong;
-import com.paymennt.solanaj.api.rpc.types.RpcSendTransactionConfig;
 import com.paymennt.solanaj.api.rpc.types.RpcSendTransactionConfig.Encoding;
-import com.paymennt.solanaj.api.rpc.types.RpcSignitureStatusResult;
-import com.paymennt.solanaj.api.rpc.types.RpcStatusConfig;
-import com.paymennt.solanaj.api.rpc.types.RpcTokenAccount;
-import com.paymennt.solanaj.api.rpc.types.RpcTokenAccountConfig;
-import com.paymennt.solanaj.api.rpc.types.RpcTokenBalance;
-import com.paymennt.solanaj.api.rpc.types.SignatureInformation;
-import com.paymennt.solanaj.api.rpc.types.SolanaCommitment;
 import com.paymennt.solanaj.data.SolanaAccount;
 import com.paymennt.solanaj.data.SolanaMessage;
 import com.paymennt.solanaj.data.SolanaPublicKey;
 import com.paymennt.solanaj.data.SolanaTransaction;
 import com.paymennt.solanaj.exception.SolanajException;
 import com.paymennt.solanaj.program.TokenProgram;
+
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 
 /**
  * 
@@ -58,8 +45,18 @@ public class SolanaRpcApi {
      *
      * @return 
      */
+    @Deprecated
     public String getRecentBlockhash() {
         return client.call("getRecentBlockhash", null, RecentBlockhash.class).getRecentBlockhash();
+    }
+
+    /**
+     * get hash of last block
+     *
+     * @return
+     */
+    public String getLatestBlockhash() {
+        return client.call("getLatestBlockhash", null, RecentBlockhash.class).getRecentBlockhash();
     }
 
     /**

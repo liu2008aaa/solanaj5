@@ -4,9 +4,9 @@
  */
 package com.paymennt.solanaj.api.rpc.types;
 
-import java.util.List;
-
 import com.paymennt.solanaj.data.ConfirmationStatus;
+
+import java.util.List;
 
 
 /**

@@ -4,22 +4,23 @@
  */
 package com.paymennt.solanaj.data;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.paymennt.crypto.bip32.wallet.key.HdPublicKey;
 import com.paymennt.crypto.lib.Base58;
 import com.paymennt.crypto.lib.ByteUtils;
 import com.paymennt.crypto.lib.Sha256;
 import com.paymennt.solanaj.exception.SolanajException;
 import com.paymennt.solanaj.utils.TweetNaclFast;
+import org.near.borshj.Borsh;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 
  */
-public class SolanaPublicKey extends HdPublicKey {
+public class SolanaPublicKey extends HdPublicKey implements Borsh {
 
     /**  */
     public static final int PUBLIC_KEY_LENGTH = 32;
@@ -27,6 +28,7 @@ public class SolanaPublicKey extends HdPublicKey {
     /**  */
     private byte[] pubkey;
 
+    public SolanaPublicKey(){}
     /**
      * 
      *

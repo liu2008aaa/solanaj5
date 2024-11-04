@@ -4,14 +4,12 @@
  */
 package com.paymennt.solanaj.program;
 
+import com.paymennt.solanaj.data.*;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.paymennt.solanaj.data.AccountMeta;
-import com.paymennt.solanaj.data.SolanaPublicKey;
-import com.paymennt.solanaj.data.SolanaTransactionInstruction;
 
 /**
  * 
@@ -20,13 +18,17 @@ public class TokenProgram {
 
     /**  */
     public static final SolanaPublicKey PROGRAM_ID = new SolanaPublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+    /**
+     * 2022 token program
+     */
+    public static final SolanaPublicKey PROGRAM_ID_2022 = new SolanaPublicKey("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb");
 
     /**  Address of the SPL Associated Token Account program. */
     public static final SolanaPublicKey ASSOCIATED_TOKEN_PROGRAM_ID =
             new SolanaPublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL");
 
     /**  */
-    private static final SolanaPublicKey SYSVAR_RENT_PUBKEY =
+    public static final SolanaPublicKey SYSVAR_RENT_PUBKEY =
             new SolanaPublicKey("SysvarRent111111111111111111111111111111111");
 
     /**  */
@@ -283,5 +285,179 @@ public class TokenProgram {
         result.put(decimals);
 
         return result.array();
+    }
+
+    /**
+     * create instruction for init mint
+     *
+     * @param payer
+     * @param mint
+     * @param tokenDecimal
+     * @param mintAuthority
+     * @param freezeAuthority
+     * @return
+     */
+    public static SolanaTransactionInstruction initializeMintInstructionData(SolanaAccount payer,
+                                                                              SolanaAccount mint,
+                                                                              long tokenDecimal,
+                                                                              SolanaAccount mintAuthority,
+                                                                              SolanaAccount freezeAuthority){
+        //init mint
+        List<AccountMeta> keys = new ArrayList<>();
+        keys.add(new AccountMeta(mint.getPublicKey(), true, true));
+        keys.add(new AccountMeta(TokenProgram.SYSVAR_RENT_PUBKEY, false, false));
+
+        ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 32 + 1 + (freezeAuthority != null ? 32 : 0));
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        //init mint
+        buffer.put((byte)0);
+        buffer.put((byte)tokenDecimal);
+        buffer.put(mintAuthority.getPublicKey().toByteArray());
+        //has freeze_authority
+        buffer.put((byte) (freezeAuthority != null ? 1 : 0));
+        //freeze_authority
+        if(freezeAuthority!=null) {
+            buffer.put(freezeAuthority.getPublicKey().toByteArray());
+        }
+        return new SolanaTransactionInstruction(TokenProgram.PROGRAM_ID, keys, buffer.array());
+    }
+
+    /**
+     * create instruction for init mint USE 2022 version
+     *
+     * @param payer
+     * @param mint
+     * @param tokenDecimal
+     * @param mintAuthority
+     * @param freezeAuthority
+     * @return
+     */
+    public static SolanaTransactionInstruction initializeMintInstructionData2022(SolanaAccount payer,
+                                                                             SolanaAccount mint,
+                                                                             long tokenDecimal,
+                                                                             SolanaAccount mintAuthority,
+                                                                             SolanaAccount freezeAuthority){
+        //init mint
+        List<AccountMeta> keys = new ArrayList<>();
+        keys.add(new AccountMeta(mint.getPublicKey(), true, true));
+        keys.add(new AccountMeta(TokenProgram.SYSVAR_RENT_PUBKEY, false, false));
+
+        ByteBuffer buffer = ByteBuffer.allocate(1 + 1 + 32 + 1 + (freezeAuthority != null ? 32 : 0));
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        //init mint
+        buffer.put((byte)0);
+        buffer.put((byte)tokenDecimal);
+        buffer.put(mintAuthority.getPublicKey().toByteArray());
+        //has freeze_authority
+        buffer.put((byte) (freezeAuthority != null ? 1 : 0));
+        //freeze_authority
+        if(freezeAuthority!=null) {
+            buffer.put(freezeAuthority.getPublicKey().toByteArray());
+        }
+        return new SolanaTransactionInstruction(TokenProgram.PROGRAM_ID_2022, keys, buffer.array());
+    }
+
+    /**
+     * Create Transaction Of Create a Mint
+     * 1、Create Mint Account
+     * 2、Initialize Mint
+     *
+     * @param payer
+     * @param mint
+     * @param mintAuthority
+     * @param freezeAuthority
+     * @param space
+     * @param lamports
+     * @param tokenDecimal
+     * @param latestBlockhash
+     * @return
+     */
+    private static SolanaTransaction createMintTxInner(SolanaAccount payer,
+                                    SolanaAccount mint,
+                                    SolanaAccount mintAuthority,
+                                    SolanaAccount freezeAuthority,
+                                    long space,
+                                    long lamports,
+                                    long tokenDecimal,
+                                    String latestBlockhash,
+                                    SolanaPublicKey programId){
+        SolanaTransaction transaction = new SolanaTransaction();
+        //instruction for create a new mint account
+        transaction.addInstruction(//
+                SystemProgram.createAccount(
+                        payer.getPublicKey(),
+                        mint.getPublicKey(),
+                        lamports,
+                        space,
+                        programId
+                )//
+        );
+        //instruction for initialize mint
+        transaction.addInstruction(
+                TokenProgram.initializeMintInstructionData(
+                        payer,
+                        mint,
+                        tokenDecimal,
+                        mintAuthority,
+                        freezeAuthority));
+        //last block hash
+        transaction.setRecentBlockHash(latestBlockhash);
+        //fee payer
+        transaction.setFeePayer(payer.getPublicKey());
+        //signers
+        List<SolanaAccount> signers = new ArrayList<>();
+        signers.add(payer);
+        signers.add(mint);
+        transaction.sign(signers);
+        return transaction;
+    }
+
+    /**
+     *  by PROGRAM_ID
+     *
+     * @param payer
+     * @param mint
+     * @param mintAuthority
+     * @param freezeAuthority
+     * @param space
+     * @param lamports
+     * @param tokenDecimal
+     * @param latestBlockhash
+     * @return
+     */
+    public static SolanaTransaction createMintTx(SolanaAccount payer,
+                                                      SolanaAccount mint,
+                                                      SolanaAccount mintAuthority,
+                                                      SolanaAccount freezeAuthority,
+                                                      long space,
+                                                      long lamports,
+                                                      long tokenDecimal,
+                                                      String latestBlockhash){
+        return createMintTxInner(payer,mint,mintAuthority,freezeAuthority,space,lamports,tokenDecimal,latestBlockhash,PROGRAM_ID);
+    }
+    /**
+     * Create Transaction Of Create a Mint
+     * 1、Create Mint Account
+     * 2、Initialize Mint
+     *
+     * @param payer
+     * @param mint
+     * @param mintAuthority
+     * @param freezeAuthority
+     * @param space
+     * @param lamports
+     * @param tokenDecimal
+     * @param latestBlockhash
+     * @return
+     */
+    public static SolanaTransaction createMintTx2022(SolanaAccount payer,
+                                                 SolanaAccount mint,
+                                                 SolanaAccount mintAuthority,
+                                                 SolanaAccount freezeAuthority,
+                                                 long space,
+                                                 long lamports,
+                                                 long tokenDecimal,
+                                                 String latestBlockhash){
+        return createMintTxInner(payer,mint,mintAuthority,freezeAuthority,space,lamports,tokenDecimal,latestBlockhash,PROGRAM_ID_2022);
     }
 }

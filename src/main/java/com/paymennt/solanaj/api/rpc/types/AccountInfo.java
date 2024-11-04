@@ -51,7 +51,7 @@ public class AccountInfo extends RpcResultObject {
         private String owner;
         
         /**  */
-        private long rentEpoch;
+        private String rentEpoch;
 
         /**
          * 
@@ -130,7 +130,7 @@ public class AccountInfo extends RpcResultObject {
          *
          * @return 
          */
-        public long getRentEpoch() {
+        public String getRentEpoch() {
             return rentEpoch;
         }
 
@@ -139,7 +139,7 @@ public class AccountInfo extends RpcResultObject {
          *
          * @param rentEpoch 
          */
-        public void setRentEpoch(long rentEpoch) {
+        public void setRentEpoch(String rentEpoch) {
             this.rentEpoch = rentEpoch;
         }
 

@@ -4,12 +4,12 @@
  */
 package com.paymennt.solanaj.utils;
 
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.Queue;
-
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
 
 /**
  * a websocket client wrapper that reconnects on failure.
