@@ -25,7 +25,7 @@ import com.paymennt.solanaj.wallet.SolanaWallet;
  */
 public class SolanaRpcTestSuite {
 
-    private static Cluster cluster = Cluster.DEVNET;
+    private static Cluster cluster = Cluster.TESTNET;
     private static Network network = Network.TESTNET;
 
     private static final String mnemonic =
