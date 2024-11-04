@@ -98,9 +98,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>androidx.annotation</groupId>
-			<artifactId>annotation</artifactId>
-			<version>1.9.0</version>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.24</version>
 		</dependency>
 
 	</dependencies>
